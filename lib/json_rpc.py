@@ -76,7 +76,7 @@ def rpc():
         result['error'] = None 
     except Exception as e:
         result['result'] = None
-        result['error'] = str(e)
+        result['error'] = {'message':str(e), 'code':-1} #TODO: return same code as bitcoind
     return json.dumps(result, cls=JsonDecimalEncoder)
 
 
