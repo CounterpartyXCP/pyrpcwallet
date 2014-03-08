@@ -20,10 +20,11 @@ class Wallet():
         self.passphrase = passphrase.encode('utf8')
         self.crypter = WalletCrypter()
         self.db = WalletDB(dbpath)
-        self.checkpassphrase()
+        
 
 
     def encryptsecretexponent(self, secret_exponent):
+        self.checkpassphrase()
         salt = random_hex(16)
         rounds = int(50000+random.random()*20000)
         self.crypter.set_passphrase(self.passphrase, salt, rounds)
@@ -32,11 +33,13 @@ class Wallet():
 
 
     def decryptsecretexponent(self, encrypted_secret_exponent, rounds, salt):
-        self.crypter.set_passphrase(self.passphrase, salt, rounds)
-        secret_exponent = self.crypter.decrypt(eval(encrypted_secret_exponent))
-        secret_exponent = int(secret_exponent, 16)
-        return secret_exponent
-
+        try:
+            self.crypter.set_passphrase(self.passphrase, salt, rounds)
+            secret_exponent = self.crypter.decrypt(eval(encrypted_secret_exponent))
+            secret_exponent = int(secret_exponent, 16)
+            return secret_exponent
+        except:
+            raise Exception("Invalid passphrase")
 
     def getsecretexponent(self, address):
         if is_valid_bitcoin_address(address)==False:
@@ -50,14 +53,14 @@ class Wallet():
 
 
     def checkpassphrase(self):
+        if self.passphrase=='':
+            raise Exception("Invalid passphrase")
         # a random address is verified. todo: Maybe give the ability to have different passphrase for each address?
         address, encrypted_secret_exponent, rounds, salt = self.db.getoneaddress()
         if address is None:
             return True #first use
-        try:
-            self.decryptsecretexponent(encrypted_secret_exponent, rounds, salt)
-        except:
-            raise Exception("Invalid passphrase")
+            
+        self.decryptsecretexponent(encrypted_secret_exponent, rounds, salt)
         return True
 
 
