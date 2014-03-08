@@ -54,7 +54,7 @@ def update_balances():
         print("Updating balances and unspent outputs from Blockchain.info...")     
         db.update()
         print("Balances updated")
-        time.sleep(int(config.UPDATE_INTERVAL))
+        time.sleep(int(config.UPDATE_INTERVAL*60))
 
 
 @app.post('/')
