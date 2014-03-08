@@ -8,6 +8,8 @@ from pycoin.tx.TxIn import TxIn
 from pycoin.tx.Tx import Tx, SIGHASH_ALL
 from pycoin.encoding import h2b
 
+from lib.tx_script import TxScript
+
 class RawTransaction():
 
     def __init__(self, unsigned_hex):
@@ -72,9 +74,13 @@ class RawTransaction():
 
         for tx_in in json_dict['vin']:
             tx_in['txid'] = b2h(tx_in['txid'][::-1])
+            tx_script = TxScript(tx_in['scriptSig']['hex'])
+            tx_in['scriptSig']['asm'] = tx_script.to_asm()
             tx_in['scriptSig']['hex'] = b2h(tx_in['scriptSig']['hex'])
 
         for tx_out in json_dict['vout']:
+            tx_script = TxScript(tx_out['scriptPubKey']['hex'])
+            tx_out['scriptPubKey']['asm'] = tx_script.to_asm()
             tx_out['scriptPubKey']['hex'] = b2h(tx_out['scriptPubKey']['hex'])
 
         if return_dict:

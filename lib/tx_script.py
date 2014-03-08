@@ -66,4 +66,7 @@ class TxScript():
             pass
         return None
 
+    def to_asm(self):
+        return tools.disassemble(self.script)
+
 
