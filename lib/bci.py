@@ -1,6 +1,7 @@
-import requests
+import requests, json
 from pycoin.encoding import h2b
 from .tx_script import TxScript
+from .raw_transaction import RawTransaction
 from pycoin.convention import satoshi_to_btc
 
 class BCI():
@@ -52,14 +53,20 @@ class BCI():
 
 
     @staticmethod
-    def getrawtransaction(tx_hash):
+    def getrawtransaction(tx_hash, verbose=0):
         try:
             response = requests.get("http://blockchain.info/rawtx/"+tx_hash+"?format=hex")
+            
             if response.status_code != 200:
                 raise Exception("Bad status code returned from blockchain.info: %s" % response.status_code)
             elif response.text.lower()=='invalid transaction hash':
                 raise Exception("Invalid Transaction Hash: %s" % tx_hash)
+
+            if verbose==1:
+                unsigned_tx = RawTransaction(response.text)
+                return unsigned_tx.to_json(return_dict=True)
             return response.text
+
         except requests.exceptions.RequestException as e:
             raise Exception("Problem getting raw transaction from blockchain.info: %s" % e)
 

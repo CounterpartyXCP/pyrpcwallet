@@ -59,7 +59,7 @@ class Wallet():
         address, encrypted_secret_exponent, rounds, salt = self.db.getoneaddress()
         if address is None:
             return True #first use
-            
+
         self.decryptsecretexponent(encrypted_secret_exponent, rounds, salt)
         return True
 

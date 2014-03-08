@@ -65,7 +65,7 @@ class RawTransaction():
 
         self.pycoin_tx = UnsignedTx(self.version, self.unsigned_txs_out, self.new_txs_out, self.lock_time)
 
-    def to_json(self, pretty=False):
+    def to_json(self, pretty=False, return_dict=False):
         json_dict = copy.deepcopy(self.data)
         
         del(json_dict['__data__'])
@@ -77,6 +77,8 @@ class RawTransaction():
         for tx_out in json_dict['vout']:
             tx_out['scriptPubKey']['hex'] = b2h(tx_out['scriptPubKey']['hex'])
 
+        if return_dict:
+            return json_dict
         if pretty:
             return json.dumps(json_dict, sort_keys=True, indent=4, separators=(',', ': '))
         else:
