@@ -44,7 +44,8 @@ def set_passphrase(passphrase, expiration=60.0):
 
 def get_infos():
     return {
-        "unlocked_until": config.UNLOCKED_UNTIL
+        "unlocked_until": config.UNLOCKED_UNTIL,
+        "pyrpcwallet": True
     }
     
 
