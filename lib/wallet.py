@@ -2,10 +2,11 @@ import os, appdirs, random
 
 from pycoin.wallet import Wallet as PycoinWallet
 from pycoin import ecdsa
-from pycoin.encoding import public_pair_to_bitcoin_address, wif_to_secret_exponent, is_valid_bitcoin_address, secret_exponent_to_wif
+from pycoin.encoding import public_pair_to_bitcoin_address, wif_to_secret_exponent, is_valid_bitcoin_address, secret_exponent_to_wif, public_pair_to_sec
 from pycoin.convention import satoshi_to_btc, btc_to_satoshi
 
-from .utils import random_hex
+
+from .utils import random_hex, b2h
 from .wallet_crypter import WalletCrypter
 from .raw_transaction import RawTransaction
 from .secret_exponent_solver import SecretExponentSolver
@@ -100,6 +101,19 @@ class Wallet():
         except:
             raise Exception("Unknown address: %s" % address)
         return wif
+
+
+    def dumppubkey(self, address):
+        if is_valid_bitcoin_address(address)==False:
+            return Exception("Invalid address %s" % address)
+        try:
+            secret_exponent = self.getsecretexponent(address)
+            public_pair = ecdsa.public_pair_for_secret_exponent(ecdsa.generator_secp256k1, secret_exponent)
+            pubkey = public_pair_to_sec(public_pair, compressed=True)
+            pubkey = b2h(pubkey)
+        except:
+            raise Exception("Unknown address: %s" % address)
+        return pubkey
 
 
     def validateaddress(self, address):

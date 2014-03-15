@@ -7,14 +7,16 @@ from pycoin.tx.TxOut import TxOut
 from pycoin.tx.TxIn import TxIn
 from pycoin.tx.Tx import Tx, SIGHASH_ALL
 from pycoin.encoding import h2b
+from pycoin.convention import tx_fee
 
 from lib.tx_script import TxScript
 
 class RawTransaction():
 
-    def __init__(self, unsigned_hex):
+    def __init__(self, unsigned_hex=''):
         self.unsigned_hex = unsigned_hex 
-        self.parse_transaction()
+        if unsigned_hex!='':
+            self.parse_transaction()
 
     def parse_tx_in(self):
         tx_in = {}
@@ -97,4 +99,38 @@ class RawTransaction():
         tx_bytes = s.getvalue()
         tx_hex = binascii.hexlify(tx_bytes).decode("utf8")
         return tx_hex
+
+    # inputs = [{"txid":txid,"vout":vout, "scriptPubKey":scriptPubKey, "amount":amount},...] 
+    # outputs = {address:amount, ...} 
+    # amount in satoshi
+    def create_raw_transaction(inputs, outputs):
+        coins_sources = []
+        coins_to = []
+        total_unspent = 0
+        total_spent = 0
+
+        for intx in inputs:
+            tx_out = TxOut(intx['amount'], h2b(intx['scriptPubKey']))
+            coins_source = (h2b(intx['txid'])[::-1], intx['vout'], tx_out)
+            coins_sources.append(coins_source)
+            total_unspent += intx['amount']
+
+        for outtx in outputs:
+            self.coins_to.append((outtx['amount'], address))
+            total_spent += outtx['amount']
+
+        fee = total_unspent - total_spent
+
+        if fee < 0:
+            message = "not enough source coins (%s BTC) for destination (%s BTC). Short %s BTC" %  (satoshi_to_btc(total_unspent), satoshi_to_btc(total_spent), satoshi_to_btc(-fee))
+            raise Exception(message)
+        
+        unsigned_tx = UnsignedTx.standard_tx(coins_from, coins_to)
+        s = io.BytesIO()
+        unsigned_tx.stream(s)
+        tx_bytes = s.getvalue()
+        tx_hex = binascii.hexlify(tx_bytes).decode("utf8")
+        return tx_hex
+        
+
 

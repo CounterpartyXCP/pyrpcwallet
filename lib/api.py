@@ -5,7 +5,8 @@ from lib.bci import BCI
 class API():
 
     wallet_actions = ["listaddressgroupings", "getbalance", "listunspent", "getnewaddress", "importprivkey",
-                      "validateaddress", "dumpprivkey", "signrawtransaction", "decoderawtransaction", "updatebalances"]
+                      "validateaddress", "dumpprivkey", "signrawtransaction", "decoderawtransaction", "updatebalances",
+                      "dumppubkey"]
 
     bci_actions = ["sendrawtransaction", "getrawtransaction", "getblockcount", "getblockhash", "getblock"]
 

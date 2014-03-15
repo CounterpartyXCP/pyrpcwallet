@@ -96,10 +96,12 @@ class WalletDB():
                     cursor.executemany(sql, values)
 
 
-    def listunspent(self):
+    def listunspent(self, orderby='address', orderdir='ASC', tospend=0):
         cursor = self.db.cursor()
-        sql = "SELECT address, txid, scriptPubKey, amount, vout, confirmations, updated_at, source FROM unspents ORDER BY address"
+        sql = "SELECT address, txid, scriptPubKey, amount, vout, confirmations, updated_at, source FROM unspents ORDER BY "+orderby+" "+orderdir
         unspents = []
+        tospend = btc_to_satoshi(tospend)
+        amount = 0
         for unspent in cursor.execute(sql):      
             unspents.append({
                 'address': unspent[0], 
@@ -111,6 +113,7 @@ class WalletDB():
                 'updated_at': unspent[6], 
                 'source': unspent[7]
             })
+
         return unspents
 
 
