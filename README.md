@@ -82,7 +82,8 @@ https://en.bitcoin.it/wiki/Original_Bitcoin_client/API_calls_list
 
 <b>additional commands</b>
 
-+ updatebalances : retrieve from blockchain.info balances and unspent outputs. Use this command if you run pyrpcwallet with --update-interval=0
++ updatebalances : To retrieve from blockchain.info balances and unspent outputs. Use this command if you run pyrpcwallet with --update-interval=0
++ dumppubkey: To get the pubic key of an address
 
 # Todo
 
