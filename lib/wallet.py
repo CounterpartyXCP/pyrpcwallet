@@ -78,7 +78,7 @@ class Wallet():
         entropy = bytearray(seed)
         pycwallet = PycoinWallet.from_master_secret(bytes(entropy), is_test=False)
         address = pycwallet.bitcoin_address()
-        secret_exponent = hex(self.secret_exponent)[2:].encode('utf8')
+        secret_exponent = hex(pycwallet.secret_exponent)[2:].encode('utf8')
         self.insertaddress(address, secret_exponent)
         return address
 
