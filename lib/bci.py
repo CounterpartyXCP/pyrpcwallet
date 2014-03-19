@@ -24,20 +24,20 @@ class BCI():
         #take the returned data to a format compatible with bitcoind's output
         listunspent = []
         for output in unspent_outputs:
+            if 'tx_hash' in output and  output['tx_hash'] is not None:
+                output['tx_hash'] = output['tx_hash'][::-1] #reverse string
+                output['tx_hash'] = ''.join([output['tx_hash'][i:i+2][::-1] for i in range(0, len(output['tx_hash']), 2)]) #flip the character pairs within the string
             
-            output['tx_hash'] = output['tx_hash'][::-1] #reverse string
-            output['tx_hash'] = ''.join([output['tx_hash'][i:i+2][::-1] for i in range(0, len(output['tx_hash']), 2)]) #flip the character pairs within the string
-            
-            script = TxScript(h2b(output['script']))
+                script = TxScript(h2b(output['script']))
 
-            listunspent.append({
-                'address': script.bitcoin_address_for_script(),
-                'txid': output['tx_hash'],
-                'vout': output['tx_output_n'],
-                'scriptPubKey': output['script'],
-                'amount': float(satoshi_to_btc(output['value'])),
-                'confirmations': output['confirmations']
-            })
+                listunspent.append({
+                    'address': script.bitcoin_address_for_script(),
+                    'txid': output['tx_hash'],
+                    'vout': output['tx_output_n'],
+                    'scriptPubKey': output['script'],
+                    'amount': float(satoshi_to_btc(output['value'])),
+                    'confirmations': output['confirmations']
+                })
 
         return listunspent
             
