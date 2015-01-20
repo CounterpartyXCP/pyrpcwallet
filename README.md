@@ -1,7 +1,7 @@
 pyrpcwallet
 ==========
 
-Lightweigt JSON RPC wallet compatible with bitcoind
+Lightweight JSON RPC wallet compatible with bitcoind
 
 * same commands and same result as bitcoind JSON-RPC API
 * no need to download the blockchain
